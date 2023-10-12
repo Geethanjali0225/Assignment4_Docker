@@ -1,0 +1,16 @@
+filebeat.config:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+  
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /var/log/nginx/access.log
+    - /var/log/nginx/error.log
+
+output.elasticsearch:
+  hosts: ['${ELASTICSEARCH_HOSTS:elasticsearch:9200}']  # Replace with your Elasticsearch host and port
+ # Replace with your Elasticsearch host and port
+ # Change the file extension
+

@@ -1,0 +1,52 @@
+#change the extension before running the file
+
+
+
+version: '3'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9201:9200"
+    command: ["elasticsearch", "-E", "network.host=0.0.0.0"]
+    networks:
+      - elk
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.15.0
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:7.15.0
+    container_name: filebeat
+    volumes:
+      - /home/sigmoid/docker/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - /home/sigmoid/docker/nginx/logs:/var/log/nginx
+    networks:
+      - elk
+
+
+  nginx:
+    image: nginx
+    container_name: nginx
+    ports:
+      - "82:82"
+    volumes:
+      - /home/sigmoid/docker/nginx/logs:/var/log/nginx
+    networks:
+      - elk
+
+networks:
+  elk:
+
